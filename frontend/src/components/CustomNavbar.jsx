@@ -11,7 +11,7 @@ const CustomNavbar = () => {
   }, []);
 
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-100 mb-4">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -81,8 +81,7 @@ const CustomNavbar = () => {
       </div>
 
       <div className="navbar-end">
-        <a className="btn mr-3">Login/Signup</a>
-        {/* Show the theme select button only on large screens */}
+        <Link to='/regis' className="btn mr-3">Login/Signup</Link>
         <select data-choose-theme className="btn hidden lg:block">
           <option value="luxury">Luxury</option>
           <option value="cupcake">Cupcake</option>

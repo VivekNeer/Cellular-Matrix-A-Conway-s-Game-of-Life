@@ -10,8 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroicons/react": "^2.1.5",
+    "@iconify-json/heroicons": "^1.2.1",
     "@lottiefiles/lottie-player": "^2.0.4",
     "@lottiefiles/react-lottie-player": "^3.5.4",
+    "@supabase/supabase-js": "^2.45.4",
+    "@tailwindcss/typography": "^0.5.15",
     "frontend": "file:",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
