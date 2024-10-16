@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
+import { supabase } from '../supabaseClient.js';
 
 export function Regis() {
   const [passwordShown, setPasswordShown] = useState(false);
@@ -13,35 +14,24 @@ export function Regis() {
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    // Simple Password Match Validation
     if (password !== confirmPassword) {
       setErrorMessage("Passwords do not match");
       return;
     }
     setErrorMessage("");
 
-    // Add your API call here (e.g., calling the backend sign-up route)
     try {
-      const response = await fetch("http://localhost:5000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: e.target.email.value,
-          password: password,
-        }),
+      const { error } = await supabase.auth.signUp({
+        email: e.target.email.value,
+        password: password,
       });
-      
-      const result = await response.json();
-      if (response.ok) {
-        console.log("Sign-up successful", result);
+
+      if (error) {
+        setErrorMessage(error.message);
       } else {
-        console.error("Sign-up error", result.error);
-        setErrorMessage(result.error);
+        console.log("Sign-up successful");
       }
     } catch (error) {
-      console.error("Error during sign-up", error);
       setErrorMessage("Something went wrong. Please try again.");
     }
   };

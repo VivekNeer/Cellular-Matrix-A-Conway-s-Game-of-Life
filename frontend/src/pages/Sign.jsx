@@ -1,40 +1,34 @@
 import { useState } from "react";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
+import { supabase } from '../supabaseClient';
 
 export function Sign() {
-  const [passwordShown, setPasswordShown] = useState(false);
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [passwordShown, setPasswordShown] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const togglePasswordVisibility = () => setPasswordShown((cur) => !cur);
+  const togglePasswordVisibility = () => {
+    setPasswordShown(!passwordShown);
+  };
 
-  const handleSignUp = async (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
 
-
     try {
-      const response = await fetch("http://localhost:5000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: e.target.email.value,
-          password: password,
-        }),
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-      
-      const result = await response.json();
-      if (response.ok) {
-        console.log("Sign-up successful", result);
+
+      if (error) {
+        setErrorMessage(error.message);
       } else {
-        console.error("Sign-up error", result.error);
-        setErrorMessage(result.error);
+        console.log("Sign-in successful");
+        // Optionally redirect the user after successful sign-in
       }
     } catch (error) {
-      console.error("Error during sign-up", error);
       setErrorMessage("Something went wrong. Please try again.");
     }
   };
@@ -42,10 +36,10 @@ export function Sign() {
   return (
     <section className="grid text-center h-screen items-center p-8">
       <div className="card shadow-xl p-8 bg-base-100 max-w-md mx-auto">
-        <h3 className="text-2xl font-bold mb-2">Sign Up</h3>
-        <p className="mb-8 text-gray-600">Enter your email and password to create an account</p>
+        <h3 className="text-2xl font-bold mb-2">Sign In</h3>
+        <p className="mb-8 text-gray-600">Enter your email and password to sign in</p>
 
-        <form onSubmit={handleSignUp} className="space-y-6">
+        <form onSubmit={handleSignIn} className="space-y-6">
           <div className="form-control">
             <label htmlFor="email" className="label">
               <span className="label-text font-medium">Your Email</span>
@@ -56,6 +50,8 @@ export function Sign() {
               name="email"
               placeholder="name@mail.com"
               className="input input-bordered w-full"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -87,12 +83,11 @@ export function Sign() {
             </div>
           </div>
 
-
           {errorMessage && (
             <div className="text-red-500 text-sm">{errorMessage}</div>
           )}
 
-          <button type="submit" className="btn btn-primary w-full mt-4">Sign Up</button>
+          <button type="submit" className="btn btn-primary w-full mt-4">Sign In</button>
 
           <button className="btn btn-outline w-full flex items-center justify-center gap-2">
             <img
@@ -104,8 +99,8 @@ export function Sign() {
           </button>
 
           <p className="text-sm text-center mt-4">
-           Not registered?{" "}
-           <Link to="/regis" className="text-primary hover:underline">
+            Not registered?{" "}
+            <Link to="/regis" className="text-primary hover:underline">
               Sign Up
             </Link>
           </p>
