@@ -1,13 +1,18 @@
 import { useState } from "react";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
-import { supabase } from '../supabaseClient.js';
+import { supabase } from "../supabaseClient.js";
+import Alert from "../components/alert";
+import WarningAlert from "../components/WarningAlert";
 
 export function Regis() {
   const [passwordShown, setPasswordShown] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [showAlert, setShowAlert] = useState(false);
+  const [showWarningAlert, setShowWarningAlert] = useState(false);
 
   const togglePasswordVisibility = () => setPasswordShown((cur) => !cur);
 
@@ -28,11 +33,25 @@ export function Regis() {
 
       if (error) {
         setErrorMessage(error.message);
+        setShowWarningAlert(true);
+
+        setTimeout(() => {
+          setShowWarningAlert(false);
+        }, 3000);
       } else {
         console.log("Sign-up successful");
+        setShowAlert(true);
+
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
       }
     } catch (error) {
       setErrorMessage("Something went wrong. Please try again.");
+      setShowWarningAlert(true);
+      setTimeout(() => {
+        setShowWarningAlert(false);
+      }, 3000);
     }
   };
 
@@ -40,7 +59,9 @@ export function Regis() {
     <section className="grid text-center h-screen items-center p-8">
       <div className="card shadow-xl p-8 bg-base-100 max-w-md mx-auto">
         <h3 className="text-2xl font-bold mb-2">Sign Up</h3>
-        <p className="mb-8 text-gray-600">Enter your email and password to create an account</p>
+        <p className="mb-8 text-gray-600">
+          Enter your email and password to create an account
+        </p>
 
         <form onSubmit={handleSignUp} className="space-y-6">
           <div className="form-control">
@@ -115,8 +136,11 @@ export function Regis() {
             <div className="text-red-500 text-sm">{errorMessage}</div>
           )}
 
-          <button type="submit" className="btn btn-primary w-full mt-4">Sign Up</button>
-
+          <button type="submit" className="btn btn-primary w-full mt-4">
+            Sign Up
+          </button>
+          {showWarningAlert && <WarningAlert />}
+          {showAlert && <Alert />}
           <button className="btn btn-outline w-full flex items-center justify-center gap-2">
             <img
               src="https://www.material-tailwind.com/logos/logo-google.png"

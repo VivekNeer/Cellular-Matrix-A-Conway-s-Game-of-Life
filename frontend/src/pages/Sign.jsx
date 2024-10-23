@@ -87,7 +87,7 @@ export function Sign() {
             <div className="text-red-500 text-sm">{errorMessage}</div>
           )}
 
-          <button type="submit" className="btn btn-primary w-full mt-4">Sign In</button>
+          <Link to="/"><button type="submit" className="btn btn-primary w-full mt-4">Sign In</button></Link>
 
           <button className="btn btn-outline w-full flex items-center justify-center gap-2">
             <img

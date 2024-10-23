@@ -2,13 +2,32 @@ import { Link } from "react-router-dom";
 import { TfiAlignJustify } from "react-icons/tfi";
 import Rubiks from "../assets/squares.json";
 import { Player } from "@lottiefiles/react-lottie-player";
-import { useEffect } from "react";
 import { themeChange } from "theme-change";
+
+import { useState, useEffect } from "react";
+import { supabase } from "../supabaseClient";
 
 const CustomNavbar = () => {
   useEffect(() => {
     themeChange(false);
   }, []);
+
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user || null);
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
 
   return (
     <div className="navbar bg-base-100 mb-4">
@@ -81,7 +100,28 @@ const CustomNavbar = () => {
       </div>
 
       <div className="navbar-end">
-        <Link to='/regis' className="btn mr-3">Login/Signup</Link>
+        {user ? (
+          <div className="dropdown dropdown-end">
+            <button className="btn btn-ghost">
+              {user.email} {/* Display user's email */}
+            </button>
+            <ul
+              tabIndex={0}
+              className="menu dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+            >
+              <li>
+                <Link to="/sign">
+                  <button onClick={handleSignOut}>Sign Out</button>
+                </Link>{" "}
+                {/* Sign out button */}
+              </li>
+            </ul>
+          </div>
+        ) : (
+          <Link to="/regis" className="btn mr-3">
+            Login/Signup
+          </Link>
+        )}
         <select data-choose-theme className="btn hidden lg:block">
           <option value="luxury">Luxury</option>
           <option value="cupcake">Cupcake</option>
